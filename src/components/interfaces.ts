@@ -85,6 +85,21 @@ export interface Oficina {
   responsable?: string;
 }
 
+export interface OficinaFormData {
+  regional: string;
+  ciudad: string;
+  departamento: string;
+  localidad?: string;
+  empresa: string;
+  nombre: string;
+  direccion: string;
+  area: string;
+  responsable_nombre: string;
+  responsable_documento: string;
+  telefono: string;
+  email: string;
+}
+
 export interface UsuarioOption {
   id: number;
   nombre: string;
@@ -103,7 +118,6 @@ export interface EnvioFormData {
 
 export interface AsignacionFormData {
   fecha_asignacion: string;
-  fecha_devolucion?: string;
   estado: string;
 }
 
@@ -130,7 +144,6 @@ export interface AsignacionListado {
   id: number;
   estado: string;
   fecha_asignacion: string | null;
-  fecha_devolucion: string | null;
   usuario: UsuarioBasico | null;
   envio: EnvioResumen | null;
   activo: ActivoResumen | null;
@@ -141,6 +154,8 @@ export interface ListaAsignacionesProps {
   loading: boolean;
   error: string | null;
   onRefresh: () => void;
+  onEdit?: (asignacionId: number) => void;
+  onDelete?: (asignacionId: number) => void;
 }
 
 export interface ListaDeEmpleadosProps {

@@ -11,30 +11,27 @@ type SupabaseAsignacionRow = {
   id: number;
   estado: string;
   fecha_asignacion: string | null;
-  fecha_devolucion: string | null;
-  usuarios: (UsuarioBasico & { telefono?: string }) | null;
-  envios: (EnvioResumen & { fecha_envio?: string | null }) | null;
-  activos: (ActivoResumen & { estado?: string }) | null;
+  usuario: (UsuarioBasico & { telefono?: string }) | null;
+  envio: (EnvioResumen & { fecha_envio?: string | null }) | null;
+  activo: (ActivoResumen & { estado?: string }) | null;
 };
 
 const SELECT_ASIGNACIONES = `
   id,
   estado,
   fecha_asignacion,
-  fecha_devolucion,
-  usuarios:usuario_id (id, nombre, documento, email, telefono),
-  envios:envio_id (id, numero_guia, empresa_envio, estado_envio),
-  activos:activo_id (id, serial, tipo, marca, modelo)
+  usuario:usuario_id (id, nombre, documento, email, telefono),
+  envio:envio_id (id, numero_guia, empresa_envio, estado_envio),
+  activo:activo_id (id, serial, tipo, marca, modelo)
 `;
 
 const mapRowToAsignacion = (row: SupabaseAsignacionRow): AsignacionListado => ({
   id: row.id,
   estado: row.estado,
   fecha_asignacion: row.fecha_asignacion,
-  fecha_devolucion: row.fecha_devolucion,
-  usuario: row.usuarios ? { ...row.usuarios } : null,
-  envio: row.envios ? { ...row.envios } : null,
-  activo: row.activos ? { ...row.activos } : null,
+  usuario: row.usuario ? { ...row.usuario } : null,
+  envio: row.envio ? { ...row.envio } : null,
+  activo: row.activo ? { ...row.activo } : null,
 });
 
 const useAsignaciones = () => {

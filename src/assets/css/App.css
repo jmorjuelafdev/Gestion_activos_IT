@@ -1,10 +1,26 @@
+:root {
+  --primary-color: #5FB3A2;
+  --primary-dark: #4A9080;
+  --primary-light: #7FC4B5;
+  --primary-lighter: #E8F5F2;
+  --secondary-color: #4A9080;
+  --accent-color: #3D7A6C;
+  --text-dark: #2C3E50;
+  --text-light: #6C757D;
+  --bg-light: #F8F9FA;
+  --white: #FFFFFF;
+  --success: #2ecc71;
+  --warning: #f39c12;
+  --info: #3498db;
+  --danger: #e74c3c;
+}
+
 body {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
-  background-color: #242424 !important;
-  color: #333 !important;
+  background-color: var(--bg-light) !important;
+  color: var(--text-dark) !important;
 }
 .container {
   background-color: #fff !important;
@@ -16,11 +32,12 @@ body {
 }
 .btn_add {
   width: 100%;
-  border: 1px solid #333 !important;
-  background-color: #333 !important;
+  border: 1px solid var(--primary-color) !important;
+  background-color: var(--primary-color) !important;
 }
 .btn_add:hover {
-  opacity: 0.8;
+  background-color: var(--primary-dark) !important;
+  opacity: 0.95;
 }
 
 .flex_acciones {
@@ -31,14 +48,25 @@ body {
   margin: 0 auto;
 }
 .btn-success {
-  border: 1px solid #7366ff !important;
-  background-color: #7366ff !important;
+  border: 1px solid var(--success) !important;
+  background-color: var(--success) !important;
+}
+.btn-primary {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+}
+.btn-primary:hover {
+  background-color: var(--primary-dark) !important;
+  border-color: var(--primary-dark) !important;
+}
+.bg-primary {
+  background-color: var(--primary-color) !important;
 }
 hr {
   height: 0.1px !important;
-  color: #7366ff !important;
+  color: var(--primary-color) !important;
   width: 100% !important;
-  background-color: red;
+  opacity: 0.2;
 }
 
 .border_right {

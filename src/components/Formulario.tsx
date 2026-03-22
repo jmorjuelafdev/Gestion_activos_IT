@@ -191,7 +191,6 @@ const FormEntrega = ({ onEntregaRegistrada }: FormEntregaProps) => {
         usuario_id: usuarioId,
         envio_id: envioInsertado.id,
         fecha_asignacion: fechaAsignacion,
-        fecha_devolucion: asignacion.fecha_devolucion || null,
         estado: asignacion.estado,
       }));
 
@@ -607,17 +606,6 @@ const AsignacionForm: React.FC<{
         <option>En tránsito</option>
         <option>Entregado</option>
       </select>
-    </div>
-    <div className="col-md-6">
-      <label className="form-label">Fecha de devolución (opcional)</label>
-      <input
-        type="date"
-        className="form-control"
-        value={asignacion.fecha_devolucion ?? ""}
-        onChange={(e) =>
-          setAsignacion((prev) => ({ ...prev, fecha_devolucion: e.target.value }))
-        }
-      />
     </div>
   </div>
 );
