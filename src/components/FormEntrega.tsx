@@ -13,8 +13,681 @@ type ActivoSimple = {
   serial: string;
 };
 
+const SUR_CIUDAD_CONFIG: Record<string, CiudadConfig> = {
+  Ipiales: {
+    departamento: "Nariño",
+    empresa: "Empresa1",
+    direccion: "Ipiales, Nariño",
+    oficinas: ["Suc. Ipiales"],
+  },
+  Pasto: {
+    departamento: "Nariño",
+    empresa: "Empresa1",
+    direccion: "Pasto, Nariño",
+    oficinas: ["Suc. Pasto", "Sede Regional Nariño"],
+  },
+  Tumaco: {
+    departamento: "Nariño",
+    empresa: "Empresa1",
+    direccion: "Tumaco, Nariño",
+    oficinas: ["Suc. Tumaco"],
+  },
+  Mocoa: {
+    departamento: "Putumayo",
+    empresa: "Empresa1",
+    direccion: "Mocoa, Putumayo",
+    oficinas: ["Suc. Putumayo"],
+  },
+};
+
+const TOLIMA_CIUDAD_CONFIG: Record<string, CiudadConfig> = {
+  "El Espinal": {
+    departamento: "Tolima",
+    empresa: "Empresa1",
+    direccion: "El Espinal, Tolima",
+    oficinas: ["Suc. El Espinal"],
+  },
+  Ibagué: {
+    departamento: "Tolima",
+    empresa: "Empresa1",
+    direccion: "Ibagué, Tolima",
+    oficinas: ["Suc. Ibagué", "Sede Regional Tolima"],
+  },
+  Honda: {
+    departamento: "Tolima",
+    empresa: "Empresa1",
+    direccion: "Honda, Tolima",
+    oficinas: ["Suc. Honda"],
+  },
+};
+
+const SANTANDER_CIUDAD_CONFIG: Record<string, CiudadConfig> = {
+  Barbosa: {
+    departamento: "Santander",
+    empresa: "Empresa1",
+    direccion: "Barbosa, Santander",
+    oficinas: ["Suc. Barbosa"],
+  },
+  Arauca: {
+    departamento: "Arauca",
+    empresa: "Empresa1",
+    direccion: "Arauca, Arauca",
+    oficinas: ["Suc. Arauca"],
+  },
+  Bucaramanga: {
+    departamento: "Santander",
+    empresa: "Empresa1",
+    direccion: "Bucaramanga, Santander",
+    oficinas: ["Suc. Bucaramanga", "Sede Regional Santander"],
+  },
+  Barrancabermeja: {
+    departamento: "Santander",
+    empresa: "Empresa1",
+    direccion: "Barrancabermeja, Santander",
+    oficinas: ["Suc.Barrancabermeja"],
+  },
+  "San Gil": {
+    departamento: "Santander",
+    empresa: "Empresa1",
+    direccion: "San Gil, Santander",
+    oficinas: ["Suc. San Gil"],
+  },
+};
+
+const PACIFICO_CIUDAD_CONFIG: Record<string, CiudadConfig> = {
+  Buenaventura: {
+    departamento: "Valle del Cauca",
+    empresa: "Empresa1",
+    direccion: "Buenaventura, Valle del Cauca",
+    oficinas: ["Suc. Buenaventura"],
+  },
+  Buga: {
+    departamento: "Valle del Cauca",
+    empresa: "Empresa1",
+    direccion: "Buga, Valle del Cauca",
+    oficinas: ["Suc. Buga"],
+  },
+  Cali: {
+    departamento: "Valle del Cauca",
+    empresa: "Empresa1",
+    direccion: "Cali, Valle del Cauca",
+    oficinas: [
+      "Suc. Cali Centro",
+      "Suc. Cali Norte",
+      "Suc. Cali Sur",
+      "Sede Regional Valle del Cauca",
+    ],
+  },
+  Popayán: {
+    departamento: "Cauca",
+    empresa: "Empresa1",
+    direccion: "Popayán, Cauca",
+    oficinas: ["Suc. Popayán"],
+  },
+  Quibdó: {
+    departamento: "Chocó",
+    empresa: "Empresa1",
+    direccion: "Quibdó, Chocó",
+    oficinas: ["Suc. Quibdó"],
+  },
+};
+
+const EJE_CAFETERO_CIUDAD_CONFIG: Record<string, CiudadConfig> = {
+  Pereira: {
+    departamento: "Risaralda",
+    empresa: "Empresa1",
+    direccion: "Pereira, Risaralda",
+    oficinas: ["Suc. Pereira", "Sede Regional Eje Cafetero"],
+  },
+  Armenia: {
+    departamento: "Quindío",
+    empresa: "Empresa1",
+    direccion: "Armenia, Quindío",
+    oficinas: ["Suc. Armenia"],
+  },
+  Cartago: {
+    departamento: "Valle del Cauca",
+    empresa: "Empresa1",
+    direccion: "Cartago, Valle",
+    oficinas: ["Suc. Cartago"],
+  },
+  "La Dorada": {
+    departamento: "Caldas",
+    empresa: "Empresa1",
+    direccion: "La Dorada, Caldas",
+    oficinas: ["Suc. La Dorada"],
+  },
+  Manizales: {
+    departamento: "Caldas",
+    empresa: "Empresa1",
+    direccion: "Manizales, Caldas",
+    oficinas: ["Suc. Manizales"],
+  },
+};
+
+const NORTE_SANTANDER_CIUDAD_CONFIG: Record<string, CiudadConfig> = {
+  "Cúcuta": {
+    departamento: "Norte de Santander",
+    empresa: "Empresa1",
+    direccion: "Cúcuta, Norte de Santander",
+    oficinas: ["Suc. Cúcuta", "Sede Norte de Santander"],
+  },
+  Aguachica: {
+    departamento: "Cesar",
+    empresa: "Empresa1",
+    direccion: "Aguachica, Cesar",
+    oficinas: ["Suc. Aguachica"],
+  },
+  "Ocaña": {
+    departamento: "Norte de Santander",
+    empresa: "Empresa1",
+    direccion: "Ocaña, Norte de Santander",
+    oficinas: ["Suc. Ocaña"],
+  },
+  Pamplona: {
+    departamento: "Norte de Santander",
+    empresa: "Empresa1",
+    direccion: "Pamplona, Norte de Santander",
+    oficinas: ["Suc. Pamplona"],
+  },
+};
+
+const ORIENTE_CIUDAD_CONFIG: Record<string, CiudadConfig> = {
+  "Puerto Carreño": {
+    departamento: "Vichada",
+    empresa: "Empresa1",
+    direccion: "Puerto Carreño, Vichada",
+    oficinas: ["Suc. Puerto Carreño"],
+  },
+  Villavicencio: {
+    departamento: "Meta",
+    empresa: "Empresa1",
+    direccion: "Villavicencio, Meta",
+    oficinas: ["Suc. Villavicencio", "Sede Regional Oriente"],
+  },
+  Yopal: {
+    departamento: "Casanare",
+    empresa: "Empresa1",
+    direccion: "Yopal, Casanare",
+    oficinas: ["Suc. Yopal"],
+  },
+};
+
+const HUILA_CIUDAD_CONFIG: Record<string, CiudadConfig> = {
+  Florencia: {
+    departamento: "Caquetá",
+    empresa: "Empresa1",
+    direccion: "Florencia, Caquetá",
+    oficinas: ["Suc.Florencia"],
+  },
+  Neiva: {
+    departamento: "Huila",
+    empresa: "Empresa1",
+    direccion: "Neiva, Huila",
+    oficinas: ["Suc.Neiva", "Sede Regional Huila"],
+  },
+  Pitalito: {
+    departamento: "Huila",
+    empresa: "Empresa1",
+    direccion: "Pitalito, Huila",
+    oficinas: ["Suc.Pitalito"],
+  },
+};
+
+const CORDOBA_CIUDAD_CONFIG: Record<string, CiudadConfig> = {
+  Montería: {
+    departamento: "Córdoba",
+    empresa: "Empresa1",
+    direccion: "Montería, Córdoba",
+    oficinas: ["Suc. Montería", "Sede Regional Córdoba"],
+  },
+  Sincelejo: {
+    departamento: "Sucre",
+    empresa: "Empresa1",
+    direccion: "Sincelejo, Sucre",
+    oficinas: ["Suc.Sincelejo"],
+  },
+};
+
+const sortStrings = (values: string[]) =>
+  [...values].sort((a, b) => a.localeCompare(b, "es", { sensitivity: "base" }));
+
+type CiudadConfig = {
+  departamento: string;
+  empresa: string;
+  direccion: string;
+  oficinas: string[];
+  localidad?: string;
+};
+
+const CARIBE_CIUDAD_CONFIG: Record<string, CiudadConfig> = {
+  Barranquilla: {
+    departamento: "Atlántico",
+    empresa: "Empresa1",
+    direccion: "Barranquilla, Atlántico",
+    oficinas: ["Suc. Barranquilla", "Sede Regional Caribe"],
+  },
+  Cartagena: {
+    departamento: "Bolívar",
+    empresa: "Empresa1",
+    direccion: "Cartagena, Bolívar",
+    oficinas: ["Suc. Cartagena"],
+  },
+  Riohacha: {
+    departamento: "Guajira",
+    empresa: "Empresa1",
+    direccion: "Riohacha, Guajira",
+    oficinas: ["Suc. Riohacha"],
+  },
+  "San Andrés": {
+    departamento: "San Andrés Islas",
+    empresa: "Empresa1",
+    direccion: "San Andrés, San Andrés Islas",
+    oficinas: ["Suc. San Andrés"],
+  },
+  "Santa Marta": {
+    departamento: "Magdalena",
+    empresa: "Empresa1",
+    direccion: "Santa Marta, Magdalena",
+    oficinas: ["Suc. Santa Marta"],
+  },
+  Fundación: {
+    departamento: "Magdalena",
+    empresa: "Empresa1",
+    direccion: "Fundación, Magdalena",
+    oficinas: ["Suc. Fundación"],
+  },
+  Sincelejo: {
+    departamento: "Sucre",
+    empresa: "Empresa1",
+    direccion: "Sincelejo, Sucre",
+    oficinas: ["Suc. Sincelejo"],
+  },
+  Valledupar: {
+    departamento: "Cesar",
+    empresa: "Empresa1",
+    direccion: "Valledupar, Cesar",
+    oficinas: ["Suc. Valledupar"],
+  },
+};
+
+const BOYACA_CIUDAD_CONFIG: Record<string, CiudadConfig> = {
+  Chiquinquirá: {
+    departamento: "Boyacá",
+    empresa: "Empresa1",
+    direccion: "Chiquinquirá, Boyacá",
+    oficinas: ["Suc. Chiquinquirá"],
+  },
+  "Puerto Boyacá": {
+    departamento: "Boyacá",
+    empresa: "Empresa1",
+    direccion: "Puerto Boyacá, Boyacá",
+    oficinas: ["Suc. Puerto Boyacá"],
+  },
+  Sogamoso: {
+    departamento: "Boyacá",
+    empresa: "Empresa1",
+    direccion: "Sogamoso, Boyacá",
+    oficinas: ["Suc. Sogamoso"],
+  },
+  Tunja: {
+    departamento: "Boyacá",
+    empresa: "Empresa1",
+    direccion: "Tunja, Boyacá",
+    oficinas: ["Suc. Tunja", "Sede Regional Boyacá"],
+  },
+};
+
+const DEPARTAMENTOS_COLOMBIA = [
+  "Amazonas",
+  "Antioquia",
+  "Arauca",
+  "Atlántico",
+  "Bolívar",
+  "Bogotá D.C",
+  "Boyacá",
+  "Caldas",
+  "Caquetá",
+  "Casanare",
+  "Cauca",
+  "Cesar",
+  "Chocó",
+  "Córdoba",
+  "Cundinamarca",
+  "Guajira",
+  "Guaviare",
+  "Huila",
+  "Magdalena",
+  "Meta",
+  "Nariño",
+  "Norte de Santander",
+  "Putumayo",
+  "Quindío",
+  "Risaralda",
+  "San Andrés Islas",
+  "Santander",
+  "Sucre",
+  "Tolima",
+  "Valle del Cauca",
+  "Vichada"
+];
+
 type FormEntregaProps = {
   onEntregaRegistrada?: () => void;
+};
+
+const EMPRESAS = ["Empresa0", "Empresa1", "Empresa2", "Empresa3", "Otra"];
+
+const OFICINAS_POR_EMPRESA: Record<string, string[]> = {
+  Empresa0: ["Sede Nacional Zona Franca Bogotá", "Otra"],
+};
+
+const OFICINAS_POR_REGIONAL: Record<string, string[]> = {
+  Antioquia: [
+    "Sede Regional Antioquia",
+    "Suc. Bello",
+    "Suc. Caucasia",
+    "Suc. Medellín Centro",
+    "Suc. Medellín Norte",
+    "Suc. Medellín Sur",
+    "Suc. Puerto Berrío",
+    "Suc. Rionegro",
+    "Suc. Turbo",
+    "Otra",
+  ],
+  Caribe: [
+    "Sede Regional Caribe",
+    "Suc. Barranquilla",
+    "Suc. Cartagena",
+    "Suc. Riohacha",
+    "Suc. San Andrés",
+    "Suc. Santa Marta",
+    "Suc. Fundación",
+    "Suc. Valledupar",
+    "Otra",
+  ],
+  "Eje Cafetero": [
+    "Sede Regional Eje Cafetero",
+    "Suc. Armenia",
+    "Suc. Cartago",
+    "Suc. La Dorada",
+    "Suc. Manizales",
+    "Suc. Pereira",
+    "Otra",
+  ],
+  Huila: [
+    "Sede Regional Huila",
+    "Suc.Florencia",
+    "Suc.Neiva",
+    "Suc.Pitalito",
+    "Otra",
+  ],
+  Córdoba: [
+    "Sede Regional Córdoba",
+    "Suc. Montería",
+    "Suc.Sincelejo",
+    "Otra",
+  ],
+  Cundinamarca: [
+    "Sede Regional Cundinamarca",
+    "Suc. Leticia",
+    "Suc. Facatativá",
+    "Suc. Fusagasugá",
+    "Suc. Girardot",
+    "Suc. La Mesa",
+    "Suc. Mosquera",
+    "Suc. Soacha",
+    "Suc. Sopó",
+    "Suc. Villeta",
+    "Suc. Zipaquirá",
+    "Otra",
+  ],
+  Boyacá: [
+    "Sede Regional Boyacá",
+    "Suc. Tunja",
+    "Suc. Chiquinquirá",
+    "Suc. Puerto Boyacá",
+    "Suc. Sogamoso",
+    "Otra",
+  ],
+  "Norte de Santander": [
+    "Sede Norte de Santander",
+    "Suc. Aguachica",
+    "Suc. Cúcuta",
+    "Suc. Ocaña",
+    "Suc. Pamplona",
+    "Otra",
+  ],
+  Oriente: [
+    "Sede Regional Oriente",
+    "Suc. Puerto Carreño",
+    "Suc. Villavicencio",
+    "Suc. Yopal",
+    "Otra",
+  ],
+  Pacífico: [
+    "Sede Regional Valle del Cauca",
+    "Suc. Buenaventura",
+    "Suc. Buga",
+    "Suc. Cali Centro",
+    "Suc. Cali Norte",
+    "Suc. Cali Sur",
+    "Suc. Popayán",
+    "Suc. Quibdó",
+    "Otra",
+  ],
+  Santander: [
+    "Sede Regional Santander",
+    "Suc. Arauca",
+    "Suc. Barbosa",
+    "Suc. Barrancabermeja",
+    "Suc. Bucaramanga",
+    "Suc. San Gil",
+    "Otra",
+  ],
+  Sur: [
+    "Sede Regional Nariño",
+    "Suc. Ipiales",
+    "Suc. Pasto",
+    "Suc. Tumaco",
+    "Suc. Putumayo",
+    "Otra",
+  ],
+  Tolima: [
+    "Sede Regional Tolima",
+    "Suc. El Espinal",
+    "Suc. Honda",
+    "Suc. Ibagué",
+    "Otra",
+  ],
+};
+
+const ANTIOQUIA_CIUDAD_CONFIG: Record<string, CiudadConfig> = {
+  Bello: {
+    departamento: "Antioquia",
+    empresa: "Empresa1",
+    direccion: "Bello, Antioquia",
+    oficinas: ["Suc. Bello"],
+  },
+  Caucasia: {
+    departamento: "Antioquia",
+    empresa: "Empresa1",
+    direccion: "Caucasia, Antioquia",
+    oficinas: ["Suc. Caucasia"],
+  },
+  Medellín: {
+    departamento: "Antioquia",
+    empresa: "Empresa1",
+    direccion: "Medellín, Antioquia",
+    oficinas: [
+      "Sede Regional Antioquia",
+      "Suc. Medellín Centro",
+      "Suc. Medellín Norte",
+      "Suc. Medellín Sur",
+    ],
+  },
+  "Puerto Berrío": {
+    departamento: "Antioquia",
+    empresa: "Empresa1",
+    direccion: "Puerto Berrío, Antioquia",
+    oficinas: ["Suc. Puerto Berrío"],
+  },
+  Rionegro: {
+    departamento: "Antioquia",
+    empresa: "Empresa1",
+    direccion: "Rionegro, Antioquia",
+    oficinas: ["Suc. Rionegro"],
+  },
+  Turbo: {
+    departamento: "Antioquia",
+    empresa: "Empresa1",
+    direccion: "Turbo, Antioquia",
+    oficinas: ["Suc. Turbo"],
+  },
+};
+
+const CUNDINAMARCA_CIUDAD_CONFIG: Record<string, CiudadConfig> = {
+  "Sede Regional Cundinamarca": {
+    departamento: "Bogotá D.C",
+    empresa: "Empresa1",
+    direccion: "Centro Empresarial BOG Américas, Bogotá",
+    oficinas: ["Sede Regional Cundinamarca"],
+    localidad: "Puente Aranda",
+  },
+  Leticia: {
+    departamento: "Amazonas",
+    empresa: "Empresa1",
+    direccion: "Leticia, Amazonas",
+    oficinas: ["Suc. Leticia"],
+  },
+  Facatativá: {
+    departamento: "Cundinamarca",
+    empresa: "Empresa1",
+    direccion: "Facatativá, Cundinamarca",
+    oficinas: ["Suc. Facatativá"],
+  },
+  Fusagasugá: {
+    departamento: "Cundinamarca",
+    empresa: "Empresa1",
+    direccion: "Fusagasugá, Cundinamarca",
+    oficinas: ["Suc. Fusagasugá"],
+  },
+  Girardot: {
+    departamento: "Cundinamarca",
+    empresa: "Empresa1",
+    direccion: "Girardot, Cundinamarca",
+    oficinas: ["Suc. Girardot"],
+  },
+  "La Mesa": {
+    departamento: "Cundinamarca",
+    empresa: "Empresa1",
+    direccion: "La Mesa, Cundinamarca",
+    oficinas: ["Suc. La Mesa"],
+  },
+  Mosquera: {
+    departamento: "Cundinamarca",
+    empresa: "Empresa1",
+    direccion: "Mosquera, Cundinamarca",
+    oficinas: ["Suc. Mosquera"],
+  },
+  Soacha: {
+    departamento: "Cundinamarca",
+    empresa: "Empresa1",
+    direccion: "Soacha, Cundinamarca",
+    oficinas: ["Suc. Soacha"],
+  },
+  Sopó: {
+    departamento: "Cundinamarca",
+    empresa: "Empresa1",
+    direccion: "Sopó, Cundinamarca",
+    oficinas: ["Suc. Sopó"],
+  },
+  Villeta: {
+    departamento: "Cundinamarca",
+    empresa: "Empresa1",
+    direccion: "Villeta, Cundinamarca",
+    oficinas: ["Suc. Villeta"],
+  },
+  Zipaquirá: {
+    departamento: "Cundinamarca",
+    empresa: "Empresa1",
+    direccion: "Zipaquirá, Cundinamarca",
+    oficinas: ["Suc. Zipaquirá"],
+  },
+};
+
+const BOGOTA_CITY_ORDER = [
+  "Bogotá Norte",
+  "Bogotá Centro",
+  "Bogotá Occidente",
+  "Bogotá Sur",
+  "Sede Regional Bogotá",
+];
+
+const BOGOTA_CITY_CONFIG: Record<
+  string,
+  {
+    departamento: string;
+    empresa: string;
+    localidades: Record<string, string[]>;
+  }
+> = {
+  "Bogotá Norte": {
+    departamento: "Bogotá D.C",
+    empresa: "Empresa1",
+    localidades: {
+      Suba: ["Suc. Bulevar Niza", "Suc. Suba La Gaitana"],
+      "Usaquén": ["Suc. Toberín", "Suc. Usaquén Centro"],
+      Chapinero: ["Suc. Chapinero", "Suc. El Lago"],
+      "Barrios Unidos": ["Suc. Castellana", "Suc. Siete de Agosto"],
+    },
+  },
+  "Bogotá Centro": {
+    departamento: "Bogotá D.C",
+    empresa: "Empresa1",
+    localidades: {
+      Teusaquillo: ["Suc. Galerías", "Suc. Gran Estación"],
+      "Santa Fé": ["Suc. Centro Internacional"],
+      "Los Mártires": ["Suc. Paloquemao", "Suc. Santa Isabel"],
+      "La Candelaria": ["Suc. La Candelaria"],
+    },
+  },
+  "Bogotá Occidente": {
+    departamento: "Bogotá D.C",
+    empresa: "Empresa1",
+    localidades: {
+      "Engativá": ["Suc. Portal 80", "Suc. Normandía", "Suc. Engativá Centro"],
+      "Fontibón": ["Suc. Fontibón Centro", "Suc. Ciudad Salitre"],
+      Kennedy: ["Suc. Kennedy Central", "Suc. Castilla", "Suc. Patio Bonito"],
+      "Puente Aranda": ["Suc. Américas", "Suc. Ciudad Montes"],
+      Bosa: ["Suc. Bosa Centro", "Suc. El Porvenir"],
+    },
+  },
+  "Bogotá Sur": {
+    departamento: "Bogotá D.C",
+    empresa: "Empresa1",
+    localidades: {
+      "Antonio Nariño": ["Suc. Restrepo"],
+      "Rafaél Uribe Uribe": ["Suc. Olaya"],
+      "San Cristobal": ["Suc. 20 de Julio", "Suc. La Victoria"],
+      Usme: ["Suc. Santa Librada", "Suc. Usme Centro"],
+      Tunjuelito: ["Suc. Venecia", "Suc. El Tunal"],
+      "Ciudad Bolívar": ["Suc. El Ensueño", "Suc. Paseo Del Río"],
+    },
+  },
+};
+
+const normalizeText = (value: string) =>
+  value.normalize("NFD").replace(/[^\p{ASCII}]/gu, "").toLowerCase();
+
+const getCiudadConfig = (map: Record<string, CiudadConfig>, ciudad: string) => {
+  const normalizedCiudad = normalizeText(ciudad);
+  for (const [key, value] of Object.entries(map)) {
+    if (normalizeText(key) === normalizedCiudad) {
+      return value;
+    }
+  }
+  return undefined;
 };
 
 function FormEntrega({ onEntregaRegistrada }: FormEntregaProps) {
@@ -46,6 +719,10 @@ function FormEntrega({ onEntregaRegistrada }: FormEntregaProps) {
     empresa_envio: "",
     fecha_envio: "",
   });
+
+  const [empresaCustom, setEmpresaCustom] = useState("");
+  const [oficinaNombreCustom, setOficinaNombreCustom] = useState("");
+  const [usarNombreOficinaOtra, setUsarNombreOficinaOtra] = useState(false);
 
   const [activos, setActivos] = useState<ActivoSimple[]>([]);
   const [activoActual, setActivoActual] = useState<ActivoSimple>({
@@ -236,6 +913,9 @@ function FormEntrega({ onEntregaRegistrada }: FormEntregaProps) {
         telefono: "",
         email: "",
       });
+      setEmpresaCustom("");
+      setOficinaNombreCustom("");
+      setUsarNombreOficinaOtra(false);
       setUsuario({
         nombre: "",
         documento: "",
@@ -279,6 +959,12 @@ function FormEntrega({ onEntregaRegistrada }: FormEntregaProps) {
       <SeccionOficina 
         oficina={oficina} 
         setOficina={setOficina}
+        empresaCustom={empresaCustom}
+        setEmpresaCustom={setEmpresaCustom}
+        oficinaNombreCustom={oficinaNombreCustom}
+        setOficinaNombreCustom={setOficinaNombreCustom}
+        usarNombreOficinaOtra={usarNombreOficinaOtra}
+        setUsarNombreOficinaOtra={setUsarNombreOficinaOtra}
         errores={{
           regional: erroresCampos.regional,
           ciudad: erroresCampos.ciudad,
@@ -339,11 +1025,23 @@ function FormEntrega({ onEntregaRegistrada }: FormEntregaProps) {
 function SeccionOficina({
   oficina,
   setOficina,
+  empresaCustom,
+  setEmpresaCustom,
+  oficinaNombreCustom,
+  setOficinaNombreCustom,
+  usarNombreOficinaOtra,
+  setUsarNombreOficinaOtra,
   errores,
   onClearError,
 }: {
   oficina: OficinaFormData;
   setOficina: React.Dispatch<React.SetStateAction<OficinaFormData>>;
+  empresaCustom: string;
+  setEmpresaCustom: React.Dispatch<React.SetStateAction<string>>;
+  oficinaNombreCustom: string;
+  setOficinaNombreCustom: React.Dispatch<React.SetStateAction<string>>;
+  usarNombreOficinaOtra: boolean;
+  setUsarNombreOficinaOtra: React.Dispatch<React.SetStateAction<boolean>>;
   errores: {
     regional?: string;
     ciudad?: string;
@@ -362,8 +1060,120 @@ function SeccionOficina({
   const { regionales, loading } = useRegionales();
   const { ciudades, loading: loadingCiudades } = useCiudades(oficina.regional);
   const { localidades, loading: loadingLocalidades } = useLocalidades(oficina.ciudad);
-  
-  const isBogotaCiudad = oficina.ciudad && oficina.ciudad.startsWith("Bogotá");
+  const normalizarCiudadNombre = (nombre: string) =>
+    nombre === "San Andrés Islas" ? "San Andrés" : nombre;
+  const regionalesOrdenados = [...regionales].sort((a, b) => a.nombre.localeCompare(b.nombre, "es", { sensitivity: "base" }));
+  const localidadesOrdenadas = [...localidades].sort((a, b) => a.nombre.localeCompare(b.nombre, "es", { sensitivity: "base" }));
+
+  const regionalNormalizado = normalizeText(oficina.regional);
+  const isBogotaRegional = regionalNormalizado === normalizeText("Bogotá");
+  const isCundinamarcaRegional = regionalNormalizado === normalizeText("Cundinamarca");
+  const localidadFijaValue =
+    isBogotaRegional && oficina.ciudad === "Sede Nacional"
+      ? "Fontibón"
+      : isBogotaRegional && oficina.ciudad === "Sede Regional Bogotá"
+      ? "Puente Aranda"
+      : isCundinamarcaRegional && oficina.ciudad === "Sede Regional Cundinamarca"
+      ? "Puente Aranda"
+      : null;
+  const bogotaCityConfig = isBogotaRegional ? BOGOTA_CITY_CONFIG[oficina.ciudad] : undefined;
+  const bogotaLocalidades = bogotaCityConfig ? sortStrings(Object.keys(bogotaCityConfig.localidades)) : [];
+  const bogotaOficinasPorLocalidad = bogotaCityConfig && oficina.localidad
+    ? bogotaCityConfig.localidades[oficina.localidad]
+    : undefined;
+  const opcionesBogotaOficinas = bogotaOficinasPorLocalidad
+    ? sortStrings([
+        ...bogotaOficinasPorLocalidad,
+        ...(bogotaOficinasPorLocalidad.includes("Otra") ? [] : ["Otra"]),
+      ])
+    : undefined;
+  const esRegionalAntioquia = regionalNormalizado === normalizeText("Antioquia");
+  const esRegionalBoyaca = regionalNormalizado === normalizeText("Boyacá");
+  const esRegionalCaribe = regionalNormalizado === normalizeText("Caribe");
+  const esRegionalCundinamarca = regionalNormalizado === normalizeText("Cundinamarca");
+  const esRegionalEjeCafetero = regionalNormalizado === normalizeText("Eje Cafetero");
+  const esRegionalHuila = regionalNormalizado === normalizeText("Huila");
+  const esRegionalCordoba = regionalNormalizado === normalizeText("Córdoba");
+  const esRegionalNorteSantander = regionalNormalizado === normalizeText("Norte de Santander");
+  const esRegionalOriente = regionalNormalizado === normalizeText("Oriente");
+  const esRegionalPacifico = regionalNormalizado === normalizeText("Pacífico");
+  const esRegionalSantander = regionalNormalizado === normalizeText("Santander");
+  const esRegionalSur = regionalNormalizado === normalizeText("Sur");
+  const esRegionalTolima = regionalNormalizado === normalizeText("Tolima");
+  const ciudadesEspeciales = esRegionalAntioquia
+    ? sortStrings(Object.keys(ANTIOQUIA_CIUDAD_CONFIG))
+    : esRegionalBoyaca
+    ? sortStrings(Object.keys(BOYACA_CIUDAD_CONFIG))
+    : esRegionalCaribe
+    ? sortStrings(Object.keys(CARIBE_CIUDAD_CONFIG))
+    : esRegionalCundinamarca
+    ? sortStrings(Object.keys(CUNDINAMARCA_CIUDAD_CONFIG))
+    : esRegionalEjeCafetero
+    ? sortStrings(Object.keys(EJE_CAFETERO_CIUDAD_CONFIG))
+    : esRegionalHuila
+    ? sortStrings(Object.keys(HUILA_CIUDAD_CONFIG))
+    : esRegionalCordoba
+    ? sortStrings(Object.keys(CORDOBA_CIUDAD_CONFIG))
+    : esRegionalNorteSantander
+    ? sortStrings(Object.keys(NORTE_SANTANDER_CIUDAD_CONFIG))
+    : esRegionalOriente
+    ? sortStrings(Object.keys(ORIENTE_CIUDAD_CONFIG))
+    : esRegionalPacifico
+    ? sortStrings(Object.keys(PACIFICO_CIUDAD_CONFIG))
+    : esRegionalSantander
+    ? sortStrings(Object.keys(SANTANDER_CIUDAD_CONFIG))
+    : esRegionalSur
+    ? sortStrings(Object.keys(SUR_CIUDAD_CONFIG))
+    : esRegionalTolima
+    ? sortStrings(Object.keys(TOLIMA_CIUDAD_CONFIG))
+    : [];
+  const ciudadesOptions = oficina.regional
+    ? sortStrings(
+        Array.from(
+          new Set([
+            ...ciudades.map((ciudad) => normalizarCiudadNombre(ciudad.nombre)),
+            ...ciudadesEspeciales,
+          ])
+        )
+      )
+    : [];
+  const regionalCiudadConfig = esRegionalAntioquia
+    ? getCiudadConfig(ANTIOQUIA_CIUDAD_CONFIG, oficina.ciudad)
+    : esRegionalBoyaca
+    ? getCiudadConfig(BOYACA_CIUDAD_CONFIG, oficina.ciudad)
+    : esRegionalCaribe
+    ? getCiudadConfig(CARIBE_CIUDAD_CONFIG, oficina.ciudad)
+    : esRegionalCundinamarca
+    ? getCiudadConfig(CUNDINAMARCA_CIUDAD_CONFIG, oficina.ciudad)
+    : esRegionalEjeCafetero
+    ? getCiudadConfig(EJE_CAFETERO_CIUDAD_CONFIG, oficina.ciudad)
+    : esRegionalHuila
+    ? getCiudadConfig(HUILA_CIUDAD_CONFIG, oficina.ciudad)
+    : esRegionalCordoba
+    ? getCiudadConfig(CORDOBA_CIUDAD_CONFIG, oficina.ciudad)
+    : esRegionalNorteSantander
+    ? getCiudadConfig(NORTE_SANTANDER_CIUDAD_CONFIG, oficina.ciudad)
+    : esRegionalOriente
+    ? getCiudadConfig(ORIENTE_CIUDAD_CONFIG, oficina.ciudad)
+    : esRegionalPacifico
+    ? getCiudadConfig(PACIFICO_CIUDAD_CONFIG, oficina.ciudad)
+    : esRegionalSantander
+    ? getCiudadConfig(SANTANDER_CIUDAD_CONFIG, oficina.ciudad)
+    : esRegionalSur
+    ? getCiudadConfig(SUR_CIUDAD_CONFIG, oficina.ciudad)
+    : esRegionalTolima
+    ? getCiudadConfig(TOLIMA_CIUDAD_CONFIG, oficina.ciudad)
+    : undefined;
+  const oficinasCiudadEspecial = regionalCiudadConfig
+    ? sortStrings([
+        ...regionalCiudadConfig.oficinas,
+        ...(regionalCiudadConfig.oficinas.includes("Otra") ? [] : ["Otra"]),
+      ])
+    : undefined;
+  const opcionesOficinaGenerales: string[] | undefined = oficinasCiudadEspecial
+    ?? (OFICINAS_POR_EMPRESA[oficina.empresa] ? sortStrings(OFICINAS_POR_EMPRESA[oficina.empresa]) : undefined)
+    ?? (OFICINAS_POR_REGIONAL[oficina.regional] ? sortStrings(OFICINAS_POR_REGIONAL[oficina.regional]) : undefined);
+  const bogotaCityOptions = sortStrings(BOGOTA_CITY_ORDER);
 
   return (
     <div className="card p-3 mt-3 shadow-sm">
@@ -377,18 +1187,31 @@ function SeccionOficina({
             value={oficina.regional}
             onChange={(e) => {
               const newRegional = e.target.value;
+              const esBogota = newRegional === "Bogotá";
+              const esAntioquia = newRegional === "Antioquia";
               setOficina({ 
                 ...oficina, 
                 regional: newRegional,
-                ciudad: "",
-                localidad: ""
+                ciudad: esBogota ? "Sede Nacional" : "",
+                localidad: esBogota ? "Fontibón" : "",
+                departamento: esBogota ? "Bogotá D.C" : esAntioquia ? "Antioquia" : "",
+                empresa: esBogota ? "Empresa0" : esAntioquia ? "Empresa1" : "",
+                nombre: esBogota ? "Sede Nacional Zona Franca Bogotá" : "",
+                direccion: esBogota
+                  ? "Zona Franca Bogotá, Bogotá"
+                  : esAntioquia
+                  ? ""
+                  : oficina.direccion,
               });
+              setEmpresaCustom("");
+              setOficinaNombreCustom("");
+              setUsarNombreOficinaOtra(false);
               if (errores.regional) onClearError('regional');
             }}
             disabled={loading}
           >
             <option value="">Selecciona una regional</option>
-            {regionales.map((reg) => (
+            {regionalesOrdenados.map((reg) => (
               <option key={reg.id} value={reg.nombre}>
                 {reg.nombre}
               </option>
@@ -399,45 +1222,173 @@ function SeccionOficina({
 
         <div className="col-md-6">
           <label className="form-label small text-muted">Ciudad *</label>
-          <select
-            className={`form-select ${errores.ciudad ? 'is-invalid' : ''}`}
-            value={oficina.ciudad}
-            onChange={(e) => {
-              const newCiudad = e.target.value;
-              setOficina({ 
-                ...oficina, 
-                ciudad: newCiudad,
-                localidad: ""
-              });
-              if (errores.ciudad) onClearError('ciudad');
-            }}
-            disabled={!oficina.regional || loadingCiudades}
-          >
-            <option value="">{!oficina.regional ? "Selecciona primero una regional" : "Selecciona una ciudad"}</option>
-            {ciudades.map((ciudad) => (
-              <option key={ciudad.id} value={ciudad.nombre}>
-                {ciudad.nombre}
-              </option>
-            ))}
-          </select>
+          {isBogotaRegional ? (
+            <select
+              className={`form-select ${errores.ciudad ? 'is-invalid' : ''}`}
+              value={oficina.ciudad}
+              onChange={(e) => {
+                const newCiudad = e.target.value;
+                if (newCiudad === "Sede Nacional") {
+                  setOficina({
+                    ...oficina,
+                    ciudad: newCiudad,
+                    localidad: "Fontibón",
+                    departamento: "Bogotá D.C",
+                    empresa: "Empresa0",
+                    nombre: "Sede Nacional Zona Franca Bogotá",
+                    direccion: "Zona Franca Bogotá, Bogotá",
+                  });
+                } else if (newCiudad === "Sede Regional Bogotá") {
+                  setOficina({
+                    ...oficina,
+                    ciudad: newCiudad,
+                    localidad: "Puente Aranda",
+                    departamento: "Bogotá D.C",
+                    empresa: "Empresa1",
+                    nombre: "Sede Regional Bogotá",
+                    direccion: "Centro Empresarial BOG Américas, Bogotá",
+                  });
+                } else {
+                  const ciudadConfig = BOGOTA_CITY_CONFIG[newCiudad];
+                  setOficina({
+                    ...oficina,
+                    ciudad: newCiudad,
+                    localidad: "",
+                    departamento: ciudadConfig?.departamento || oficina.departamento,
+                    empresa: ciudadConfig?.empresa || oficina.empresa,
+                    nombre: "",
+                  });
+                }
+                setEmpresaCustom("");
+                setOficinaNombreCustom("");
+                setUsarNombreOficinaOtra(false);
+                if (errores.ciudad) onClearError('ciudad');
+              }}
+            >
+              <option value="">Selecciona una ciudad</option>
+              <option value="Sede Nacional">Sede Nacional</option>
+              {bogotaCityOptions.map((ciudad) => (
+                <option key={ciudad} value={ciudad}>
+                  {ciudad}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <select
+              className={`form-select ${errores.ciudad ? 'is-invalid' : ''}`}
+              value={oficina.ciudad}
+              onChange={(e) => {
+                const newCiudad = e.target.value;
+                const esAntioquia = regionalNormalizado === normalizeText("Antioquia");
+                const esBoyaca = regionalNormalizado === normalizeText("Boyacá");
+                const esCaribe = regionalNormalizado === normalizeText("Caribe");
+                const esCundinamarca = regionalNormalizado === normalizeText("Cundinamarca");
+                const esEjeCafetero = regionalNormalizado === normalizeText("Eje Cafetero");
+                const esHuila = regionalNormalizado === normalizeText("Huila");
+                const esCordoba = regionalNormalizado === normalizeText("Córdoba");
+                const esNorteSantander = regionalNormalizado === normalizeText("Norte de Santander");
+                const esOriente = regionalNormalizado === normalizeText("Oriente");
+                const esPacifico = regionalNormalizado === normalizeText("Pacífico");
+                const esSantander = regionalNormalizado === normalizeText("Santander");
+                const esSur = regionalNormalizado === normalizeText("Sur");
+                const esTolima = regionalNormalizado === normalizeText("Tolima");
+                const ciudadConfig = esAntioquia
+                  ? getCiudadConfig(ANTIOQUIA_CIUDAD_CONFIG, newCiudad)
+                  : esBoyaca
+                  ? getCiudadConfig(BOYACA_CIUDAD_CONFIG, newCiudad)
+                  : esCaribe
+                  ? getCiudadConfig(CARIBE_CIUDAD_CONFIG, newCiudad)
+                  : esCundinamarca
+                  ? getCiudadConfig(CUNDINAMARCA_CIUDAD_CONFIG, newCiudad)
+                  : esEjeCafetero
+                  ? getCiudadConfig(EJE_CAFETERO_CIUDAD_CONFIG, newCiudad)
+                  : esHuila
+                  ? getCiudadConfig(HUILA_CIUDAD_CONFIG, newCiudad)
+                  : esCordoba
+                  ? getCiudadConfig(CORDOBA_CIUDAD_CONFIG, newCiudad)
+                  : esNorteSantander
+                  ? getCiudadConfig(NORTE_SANTANDER_CIUDAD_CONFIG, newCiudad)
+                  : esOriente
+                  ? getCiudadConfig(ORIENTE_CIUDAD_CONFIG, newCiudad)
+                  : esPacifico
+                  ? getCiudadConfig(PACIFICO_CIUDAD_CONFIG, newCiudad)
+                  : esSantander
+                  ? getCiudadConfig(SANTANDER_CIUDAD_CONFIG, newCiudad)
+                  : esSur
+                  ? getCiudadConfig(SUR_CIUDAD_CONFIG, newCiudad)
+                  : esTolima
+                  ? getCiudadConfig(TOLIMA_CIUDAD_CONFIG, newCiudad)
+                  : undefined;
+                const baseOficina = {
+                  ...oficina,
+                  ciudad: newCiudad,
+                  localidad: "",
+                };
+
+                let updatedOficina = baseOficina;
+
+                if (ciudadConfig) {
+                  updatedOficina = {
+                    ...baseOficina,
+                    departamento: ciudadConfig.departamento,
+                    empresa: ciudadConfig.empresa,
+                    direccion: "direccion" in ciudadConfig ? ciudadConfig.direccion : baseOficina.direccion,
+                    nombre: ciudadConfig.oficinas[0] || "",
+                    localidad: ciudadConfig.localidad ?? baseOficina.localidad,
+                  };
+                  setEmpresaCustom("");
+                  setOficinaNombreCustom("");
+                  setUsarNombreOficinaOtra(false);
+                }
+
+                setOficina(updatedOficina);
+                if (errores.ciudad) onClearError('ciudad');
+              }}
+              disabled={!oficina.regional || loadingCiudades}
+            >
+              <option value="">{!oficina.regional ? "Selecciona primero una regional" : "Selecciona una ciudad"}</option>
+              {ciudadesOptions.map((ciudadNombre) => (
+                <option key={ciudadNombre} value={ciudadNombre}>
+                  {ciudadNombre}
+                </option>
+              ))}
+            </select>
+          )}
           {errores.ciudad && <div className="invalid-feedback d-block">{errores.ciudad}</div>}
         </div>
 
-        <div className="col-md-6">
-          <label className="form-label small text-muted">Departamento *</label>
-          <input
-            className={`form-control ${errores.departamento ? 'is-invalid' : ''}`}
-            placeholder="Departamento"
-            value={oficina.departamento}
-            onChange={(e) => {
-              setOficina({ ...oficina, departamento: e.target.value });
-              if (errores.departamento) onClearError('departamento');
-            }}
-          />
-          {errores.departamento && <div className="invalid-feedback d-block">{errores.departamento}</div>}
-        </div>
-
-        {isBogotaCiudad && (
+        {localidadFijaValue ? (
+          <div className="col-md-6">
+            <label className="form-label small text-muted">Localidad</label>
+            <input className="form-control" value={localidadFijaValue} readOnly />
+          </div>
+        ) : bogotaCityConfig ? (
+          <div className="col-md-6">
+            <label className="form-label small text-muted">Localidad *</label>
+            <select
+              className="form-select"
+              value={oficina.localidad || ""}
+              onChange={(e) => {
+                const nuevaLocalidad = e.target.value;
+                const oficinasLocalidad = bogotaCityConfig.localidades[nuevaLocalidad] || [];
+                setOficina({
+                  ...oficina,
+                  localidad: nuevaLocalidad,
+                  nombre: oficinasLocalidad[0] || "",
+                });
+                setOficinaNombreCustom("");
+                setUsarNombreOficinaOtra(false);
+              }}
+            >
+              <option value="">Selecciona una localidad</option>
+              {bogotaLocalidades.map((localidad) => (
+                <option key={localidad} value={localidad}>
+                  {localidad}
+                </option>
+              ))}
+            </select>
+          </div>
+        ) : (
           <div className="col-md-6">
             <label className="form-label small text-muted">Localidad</label>
             <select
@@ -447,7 +1398,7 @@ function SeccionOficina({
               disabled={!oficina.ciudad || loadingLocalidades}
             >
               <option value="">Selecciona una localidad</option>
-              {localidades.map((localidad) => (
+              {localidadesOrdenadas.map((localidad) => (
                 <option key={localidad.id} value={localidad.nombre}>
                   {localidad.nombre}
                 </option>
@@ -457,30 +1408,163 @@ function SeccionOficina({
         )}
 
         <div className="col-md-6">
-          <label className="form-label small text-muted">Empresa *</label>
-          <input
-            className={`form-control ${errores.empresa ? 'is-invalid' : ''}`}
-            placeholder="Empresa"
-            value={oficina.empresa}
+          <label className="form-label small text-muted">Departamento *</label>
+          <select
+            className={`form-select ${errores.departamento ? 'is-invalid' : ''}`}
+            value={oficina.departamento}
             onChange={(e) => {
-              setOficina({ ...oficina, empresa: e.target.value });
+              setOficina({ ...oficina, departamento: e.target.value });
+              if (errores.departamento) onClearError('departamento');
+            }}
+          >
+            <option value="">Selecciona un departamento</option>
+            {sortStrings(DEPARTAMENTOS_COLOMBIA).map((dep) => (
+              <option key={dep} value={dep}>
+                {dep}
+              </option>
+            ))}
+          </select>
+          {errores.departamento && <div className="invalid-feedback d-block">{errores.departamento}</div>}
+        </div>
+
+        <div className="col-md-6">
+          <label className="form-label small text-muted">Empresa *</label>
+          <select
+            className={`form-select ${errores.empresa ? 'is-invalid' : ''}`}
+            value={EMPRESAS.includes(oficina.empresa) ? oficina.empresa : "Otra"}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (value === "Otra") {
+                setOficina({ ...oficina, empresa: empresaCustom, nombre: "" });
+              } else {
+                const opcionesEmpresa = OFICINAS_POR_EMPRESA[value];
+                setOficina({ 
+                  ...oficina, 
+                  empresa: value,
+                  nombre: opcionesEmpresa ? opcionesEmpresa[0] : oficina.nombre
+                });
+                setEmpresaCustom("");
+                setOficinaNombreCustom("");
+                setUsarNombreOficinaOtra(false);
+              }
               if (errores.empresa) onClearError('empresa');
             }}
-          />
+          >
+            <option value="">Selecciona una empresa</option>
+            {sortStrings(EMPRESAS).map((empresa) => (
+              <option key={empresa} value={empresa}>
+                {empresa}
+              </option>
+            ))}
+          </select>
           {errores.empresa && <div className="invalid-feedback d-block">{errores.empresa}</div>}
+
+          {(!oficina.empresa || !EMPRESAS.includes(oficina.empresa) || oficina.empresa === "Otra") && (
+            <input
+              className="form-control mt-2"
+              placeholder="Nombre de la empresa"
+              value={empresaCustom}
+              onChange={(e) => {
+                const value = e.target.value;
+                setEmpresaCustom(value);
+                setOficina({ ...oficina, empresa: value });
+              }}
+            />
+          )}
         </div>
 
         <div className="col-md-6">
           <label className="form-label small text-muted">Nombre de la Oficina *</label>
-          <input
-            className={`form-control ${errores.nombre ? 'is-invalid' : ''}`}
-            placeholder="Nombre de la Oficina"
-            value={oficina.nombre}
-            onChange={(e) => {
-              setOficina({ ...oficina, nombre: e.target.value });
-              if (errores.nombre) onClearError('oficinaNombre');
-            }}
-          />
+          {bogotaCityConfig ? (
+            <>
+              <select
+                className={`form-select ${errores.nombre ? 'is-invalid' : ''}`}
+                value={usarNombreOficinaOtra ? "Otra" : oficina.nombre}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value === "Otra") {
+                    setUsarNombreOficinaOtra(true);
+                    setOficina({ ...oficina, nombre: oficinaNombreCustom });
+                  } else {
+                    setUsarNombreOficinaOtra(false);
+                    setOficina({ ...oficina, nombre: value });
+                    setOficinaNombreCustom("");
+                  }
+                  if (errores.nombre) onClearError('nombre');
+                }}
+                disabled={!opcionesBogotaOficinas}
+              >
+                <option value="">
+                  {opcionesBogotaOficinas ? "Selecciona una oficina" : "Selecciona primero una localidad"}
+                </option>
+                {opcionesBogotaOficinas?.map((nombre) => (
+                  <option key={nombre} value={nombre}>
+                    {nombre}
+                  </option>
+                ))}
+              </select>
+              {usarNombreOficinaOtra && (
+                <input
+                  className={`form-control mt-2 ${errores.nombre ? 'is-invalid' : ''}`}
+                  placeholder="Nombre de la oficina"
+                  value={oficinaNombreCustom}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setOficinaNombreCustom(value);
+                    setOficina({ ...oficina, nombre: value });
+                  }}
+                />
+              )}
+            </>
+          ) : opcionesOficinaGenerales ? (
+            <>
+              <select
+                className={`form-select ${errores.nombre ? 'is-invalid' : ''}`}
+                value={usarNombreOficinaOtra ? "Otra" : oficina.nombre}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value === "Otra") {
+                    setUsarNombreOficinaOtra(true);
+                    setOficina({ ...oficina, nombre: oficinaNombreCustom });
+                  } else {
+                    setUsarNombreOficinaOtra(false);
+                    setOficina({ ...oficina, nombre: value });
+                    setOficinaNombreCustom("");
+                  }
+                  if (errores.nombre) onClearError('nombre');
+                }}
+              >
+                <option value="">Selecciona una oficina</option>
+                {opcionesOficinaGenerales.map((nombre) => (
+                  <option key={nombre} value={nombre}>
+                    {nombre}
+                  </option>
+                ))}
+              </select>
+              {usarNombreOficinaOtra && (
+                <input
+                  className={`form-control mt-2 ${errores.nombre ? 'is-invalid' : ''}`}
+                  placeholder="Nombre de la oficina"
+                  value={oficinaNombreCustom}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setOficinaNombreCustom(value);
+                    setOficina({ ...oficina, nombre: value });
+                  }}
+                />
+              )}
+            </>
+          ) : (
+            <input
+              className={`form-control ${errores.nombre ? 'is-invalid' : ''}`}
+              placeholder="Nombre de la Oficina"
+              value={oficina.nombre}
+              onChange={(e) => {
+                setOficina({ ...oficina, nombre: e.target.value });
+                if (errores.nombre) onClearError('nombre');
+              }}
+            />
+          )}
           {errores.nombre && <div className="invalid-feedback d-block">{errores.nombre}</div>}
         </div>
 

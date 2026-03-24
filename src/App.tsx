@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import type { Session } from "@supabase/supabase-js";
 import "./assets/css/App.css";
 import Titulo from "./components/Titulo";
 import FormEntrega from "./components/FormEntrega";
@@ -10,12 +11,63 @@ import { ToastContainer } from "./toastUtils";
 import useAsignaciones from "./hooks/useAsignaciones";
 import { supabase } from "./lib/supabaseClient";
 import Swal from "sweetalert2";
+import Login from "./components/Login";
 
 function App() {
   const { asignaciones, loading, error, refresh } = useAsignaciones();
   const [editingAsignacionId, setEditingAsignacionId] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [vistaActiva, setVistaActiva] = useState<"dashboard" | "registrar" | "consultar">("dashboard");
+  const [session, setSession] = useState<Session | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("theme_preference");
+      if (saved === "light" || saved === "dark") return saved;
+      const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      return prefersDark ? "dark" : "light";
+    }
+    return "light";
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme_preference", theme);
+  }, [theme]);
+
+  useEffect(() => {
+    const initAuth = async () => {
+      const { data } = await supabase.auth.getSession();
+      setSession(data.session);
+      setAuthLoading(false);
+    };
+    initAuth();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession);
+      if (!newSession) {
+        setVistaActiva("dashboard");
+      }
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
+
+  const toggleTheme = () => {
+    setTheme(prev => (prev === "light" ? "dark" : "light"));
+  };
+
+  const handleLoginSuccess = (newSession: Session) => {
+    setSession(newSession);
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setSession(null);
+    setVistaActiva("dashboard");
+  };
 
   const handleEdit = (asignacionId: number) => {
     setEditingAsignacionId(asignacionId);
@@ -73,10 +125,64 @@ function App() {
     }
   };
 
+  if (authLoading) {
+    return (
+      <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light">
+        <div className="text-center">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Cargando...</span>
+          </div>
+          <p className="mt-3 text-muted">Verificando sesión...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return (
+      <div className="min-vh-100 d-flex flex-column align-items-center justify-content-center py-5" style={{ backgroundColor: "var(--bg-light)" }}>
+        <button className="theme-toggle mb-4" onClick={toggleTheme} aria-label="Cambiar tema">
+          {theme === "light" ? (
+            <>
+              <i className="bi bi-moon-stars"></i>
+              <span>Modo oscuro</span>
+            </>
+          ) : (
+            <>
+              <i className="bi bi-sun"></i>
+              <span>Modo claro</span>
+            </>
+          )}
+        </button>
+        <Login onSuccess={handleLoginSuccess} />
+      </div>
+    );
+  }
+
   return (
     <div className="container-fluid py-4">
       <ToastContainer />
-      <Titulo />
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+        <Titulo />
+        <div className="d-flex gap-2 flex-wrap">
+          <button className="theme-toggle" onClick={toggleTheme} aria-label="Cambiar tema">
+            {theme === "light" ? (
+              <>
+                <i className="bi bi-moon-stars"></i>
+                <span>Modo oscuro</span>
+              </>
+            ) : (
+              <>
+                <i className="bi bi-sun"></i>
+                <span>Modo claro</span>
+              </>
+            )}
+          </button>
+          <button className="btn btn-outline-danger" onClick={handleLogout}>
+            <i className="bi bi-box-arrow-right"></i> Cerrar sesión
+          </button>
+        </div>
+      </div>
 
       {/* Pestañas de navegación */}
       <ul className="nav nav-tabs mb-4">

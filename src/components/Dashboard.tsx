@@ -218,13 +218,13 @@ export default function Dashboard() {
         <div className="col-md-4">
           <div className="card border-0 shadow-sm h-100" style={{ borderLeft: "4px solid #5FB3A2" }}>
             <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center">
+              <div className="d-flex align-items-center gap-3 flex-wrap">
                 <div>
                   <p className="text-muted mb-1 small">Total Entregas</p>
                   <h3 className="mb-0 fw-bold">{stats.totalEntregas}</h3>
                 </div>
-                <div className="bg-light rounded-circle p-3">
-                  <i className="bi bi-box-seam fs-4" style={{ color: "#5FB3A2" }}></i>
+                <div className="stat-icon flex-shrink-0">
+                  <i className="bi bi-box-seam" style={{ color: "#5FB3A2" }}></i>
                 </div>
               </div>
             </div>
@@ -234,13 +234,13 @@ export default function Dashboard() {
         <div className="col-md-4">
           <div className="card border-0 shadow-sm h-100" style={{ borderLeft: "4px solid #4A9080" }}>
             <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center">
+              <div className="d-flex align-items-center gap-3 flex-wrap">
                 <div>
                   <p className="text-muted mb-1 small">Total Activos</p>
                   <h3 className="mb-0 fw-bold">{stats.totalActivos}</h3>
                 </div>
-                <div className="bg-light rounded-circle p-3">
-                  <i className="bi bi-laptop fs-4" style={{ color: "#4A9080" }}></i>
+                <div className="stat-icon flex-shrink-0">
+                  <i className="bi bi-laptop" style={{ color: "#4A9080" }}></i>
                 </div>
               </div>
             </div>
@@ -250,14 +250,14 @@ export default function Dashboard() {
         <div className="col-md-4">
           <div className="card border-0 shadow-sm h-100" style={{ borderLeft: "4px solid #f39c12" }}>
             <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center">
+              <div className="d-flex align-items-center gap-3 flex-wrap">
                 <div>
-                  <p className="text-muted mb-1 small">En Camino</p>
+                  <p className="text-muted mb-1 small">En camino</p>
                   <h3 className="mb-0 fw-bold">{stats.entregasEnTransito}</h3>
                   <small className="text-muted" style={{ fontSize: "0.7rem" }}>Estado: En tránsito</small>
                 </div>
-                <div className="bg-light rounded-circle p-3">
-                  <i className="bi bi-truck fs-4 text-warning"></i>
+                <div className="stat-icon flex-shrink-0">
+                  <i className="bi bi-truck" style={{ color: "#f39c12" }}></i>
                 </div>
               </div>
             </div>
@@ -265,36 +265,19 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Segunda fila - Estados de entrega */}
+      {/* Segunda fila - Estados y usuarios */}
       <div className="row g-3 mb-4">
         <div className="col-md-4">
           <div className="card border-0 shadow-sm h-100" style={{ borderLeft: "4px solid #5FB3A2" }}>
             <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center">
+              <div className="d-flex align-items-center gap-3 flex-wrap">
                 <div>
-                  <p className="text-muted mb-1 small">Equipos Entregados</p>
-                  <h3 className="mb-0 fw-bold">{stats.entregasEntregadas}</h3>
-                  <small className="text-muted" style={{ fontSize: "0.7rem" }}>Estado: Entregado</small>
-                </div>
-                <div className="bg-light rounded-circle p-3">
-                  <i className="bi bi-box-seam-fill fs-4" style={{ color: "#5FB3A2" }}></i>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="col-md-4">
-          <div className="card border-0 shadow-sm h-100" style={{ borderLeft: "4px solid #2ecc71" }}>
-            <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center">
-                <div>
-                  <p className="text-muted mb-1 small">Equipos en Uso</p>
+                  <p className="text-muted mb-1 small">Entregas activas</p>
                   <h3 className="mb-0 fw-bold">{stats.entregasActivas}</h3>
                   <small className="text-muted" style={{ fontSize: "0.7rem" }}>Estado: Activo</small>
                 </div>
-                <div className="bg-light rounded-circle p-3">
-                  <i className="bi bi-check-circle fs-4 text-success"></i>
+                <div className="stat-icon flex-shrink-0">
+                  <i className="bi bi-battery-charging" style={{ color: "#5FB3A2" }}></i>
                 </div>
               </div>
             </div>
@@ -302,15 +285,33 @@ export default function Dashboard() {
         </div>
 
         <div className="col-md-4">
-          <div className="card border-0 shadow-sm h-100" style={{ borderLeft: "4px solid #7FC4B5" }}>
+          <div className="card border-0 shadow-sm h-100" style={{ borderLeft: "4px solid #4A9080" }}>
             <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center">
+              <div className="d-flex align-items-center gap-3 flex-wrap">
                 <div>
-                  <p className="text-muted mb-1 small">Total Usuarios</p>
-                  <h3 className="mb-0 fw-bold">{stats.totalUsuarios}</h3>
+                  <p className="text-muted mb-1 small">Entregas entregadas</p>
+                  <h3 className="mb-0 fw-bold">{stats.entregasEntregadas}</h3>
+                  <small className="text-muted" style={{ fontSize: "0.7rem" }}>Estado: Entregado</small>
                 </div>
-                <div className="bg-light rounded-circle p-3">
-                  <i className="bi bi-people fs-4" style={{ color: "#7FC4B5" }}></i>
+                <div className="stat-icon flex-shrink-0">
+                  <i className="bi bi-clipboard-check" style={{ color: "#4A9080" }}></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-md-4">
+          <div className="card border-0 shadow-sm h-100" style={{ borderLeft: "4px solid #3D7A6C" }}>
+            <div className="card-body">
+              <div className="d-flex align-items-center gap-3 flex-wrap">
+                <div>
+                  <p className="text-muted mb-1 small">Total usuarios</p>
+                  <h3 className="mb-0 fw-bold">{stats.totalUsuarios}</h3>
+                  <small className="text-muted" style={{ fontSize: "0.7rem" }}>Usuarios registrados</small>
+                </div>
+                <div className="stat-icon flex-shrink-0">
+                  <i className="bi bi-people" style={{ color: "#3D7A6C" }}></i>
                 </div>
               </div>
             </div>
