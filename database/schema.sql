@@ -162,3 +162,114 @@ CREATE TABLE asignaciones (
     FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
     FOREIGN KEY (envio_id) REFERENCES envios(id)
 );
+
+-- 👥 PERFILES (Metadatos vinculados a Supabase Auth)
+CREATE TABLE profiles (
+    id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+    nombre VARCHAR(140) NOT NULL,
+    cargo VARCHAR(140),
+    username VARCHAR(150) NOT NULL UNIQUE,
+    rol TEXT NOT NULL DEFAULT 'operador' CHECK (rol IN ('admin', 'operador')),
+    must_change_password BOOLEAN NOT NULL DEFAULT TRUE,
+    activo BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE OR REPLACE FUNCTION public.set_profiles_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_profiles_updated_at
+BEFORE UPDATE ON profiles
+FOR EACH ROW
+EXECUTE FUNCTION public.set_profiles_updated_at();
+
+-- 🧾 TIPO ENUM PARA AUDITORÍA
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'audit_action') THEN
+    CREATE TYPE audit_action AS ENUM (
+      'CREATE_ENTREGA','UPDATE_ENTREGA','DELETE_ENTREGA',
+      'MANAGE_CATALOG','MANAGE_USER','EXPORT_REPORT'
+    );
+  END IF;
+END$$;
+
+-- 📜 AUDITORÍA DE ACCIONES
+CREATE TABLE audit_log (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    timestamp TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+    username VARCHAR(150),
+    rol TEXT,
+    accion audit_action NOT NULL,
+    entidad TEXT NOT NULL,
+    entidad_id TEXT,
+    detalle JSONB,
+    ip TEXT,
+    user_agent TEXT
+);
+
+-- 📚 CATÁLOGOS EDITABLES
+CREATE TABLE tipos_equipo_catalogo (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(120) NOT NULL UNIQUE,
+    activo BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE marcas_equipo_catalogo (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(120) NOT NULL UNIQUE,
+    activo BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE empresas_envio_catalogo (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(120) NOT NULL UNIQUE,
+    activo BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TRIGGER trg_tipos_equipo_catalogo_updated
+BEFORE UPDATE ON tipos_equipo_catalogo
+FOR EACH ROW EXECUTE FUNCTION public.set_profiles_updated_at();
+
+CREATE TRIGGER trg_marcas_equipo_catalogo_updated
+BEFORE UPDATE ON marcas_equipo_catalogo
+FOR EACH ROW EXECUTE FUNCTION public.set_profiles_updated_at();
+
+CREATE TRIGGER trg_empresas_envio_catalogo_updated
+BEFORE UPDATE ON empresas_envio_catalogo
+FOR EACH ROW EXECUTE FUNCTION public.set_profiles_updated_at();
+
+-- Datos iniciales para catálogos principales
+INSERT INTO tipos_equipo_catalogo (nombre) VALUES
+  ('Impresora'), ('Fotocopiadora'), ('Escáner'), ('Impresora térmica'),
+  ('Portátil'), ('PC Todo en Uno'), ('PC de escritorio'), ('Monitor'),
+  ('Scanner'), ('Video beam'), ('Teclado'), ('Teclado numérico'),
+  ('Mouse'), ('Parlantes'), ('Combo teclado y mouse'), ('Audífonos diadema'),
+  ('Tablet'), ('Celular'), ('Licencia de software'), ('Switch de Red'),
+  ('Camara web'), ('Cámara IP'), ('Proyector'), ('Tabla digitalizadora'),
+  ('Lápiz óptico');
+
+INSERT INTO marcas_equipo_catalogo (nombre) VALUES
+  ('Genius'), ('Clon'), ('HP'), ('Acer'), ('Lenovo'), ('Asus'), ('Apple'),
+  ('Dell'), ('Logitech'), ('Corsair'), ('Razer'), ('Master'), ('Samsung'),
+  ('LG'), ('AOC'), ('Microsoft'), ('MSI'), ('Epson'), ('VTA'), ('Canon'),
+  ('Xiaomi'), ('Motorola'), ('Kalley'), ('Xtech'), ('Belkin'), ('Huawei'),
+  ('Esenses'), ('Sony'), ('Honor'), ('ZTE'), ('VIVO'), ('Oppo'),
+  ('Challenger'), ('Panasonic'), ('Olimpo'), ('Tapo');
+
+INSERT INTO empresas_envio_catalogo (nombre) VALUES
+  ('4-72'), ('Coordinadora'), ('Deprisa'), ('Envía'),
+  ('Inter Rapidísimo'), ('Servientrega'), ('TCC');

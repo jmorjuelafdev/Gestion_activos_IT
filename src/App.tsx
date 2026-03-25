@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { Session } from "@supabase/supabase-js";
+import type { Session, AuthChangeEvent } from "@supabase/supabase-js";
 import "./assets/css/App.css";
 import Titulo from "./components/Titulo";
 import FormEntrega from "./components/FormEntrega";
@@ -12,12 +12,14 @@ import useAsignaciones from "./hooks/useAsignaciones";
 import { supabase } from "./lib/supabaseClient";
 import Swal from "sweetalert2";
 import Login from "./components/Login";
+import useProfile from "./hooks/useProfile";
+import AdminPanel from "./components/AdminPanel";
 
 function App() {
   const { asignaciones, loading, error, refresh } = useAsignaciones();
   const [editingAsignacionId, setEditingAsignacionId] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [vistaActiva, setVistaActiva] = useState<"dashboard" | "registrar" | "consultar">("dashboard");
+  const [vistaActiva, setVistaActiva] = useState<"dashboard" | "registrar" | "consultar" | "admin">("dashboard");
   const [session, setSession] = useState<Session | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [theme, setTheme] = useState<"light" | "dark">(() => {
@@ -29,6 +31,13 @@ function App() {
     }
     return "light";
   });
+  const [nuevoPassword, setNuevoPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+
+  const { profile, loading: profileLoading, error: profileError, refetch: refetchProfile } = useProfile(session?.user?.id ?? null);
+  const esAdmin = profile?.rol === "admin";
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -43,7 +52,7 @@ function App() {
     };
     initAuth();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, newSession) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange((_: AuthChangeEvent, newSession) => {
       setSession(newSession);
       if (!newSession) {
         setVistaActiva("dashboard");
@@ -125,6 +134,38 @@ function App() {
     }
   };
 
+  const handlePasswordChange = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!profile) return;
+    if (nuevoPassword.length < 8) {
+      setPasswordError("La contraseña debe tener al menos 8 caracteres.");
+      return;
+    }
+    if (nuevoPassword !== confirmPassword) {
+      setPasswordError("Las contraseñas no coinciden.");
+      return;
+    }
+    try {
+      setPasswordLoading(true);
+      setPasswordError(null);
+      const { error } = await supabase.auth.updateUser({ password: nuevoPassword });
+      if (error) throw error;
+      const { error: profileError } = await supabase
+        .from("profiles")
+        .update({ must_change_password: false })
+        .eq("id", profile.id);
+      if (profileError) throw profileError;
+      setNuevoPassword("");
+      setConfirmPassword("");
+      await refetchProfile();
+    } catch (err) {
+      const mensaje = err instanceof Error ? err.message : "No se pudo actualizar la contraseña";
+      setPasswordError(mensaje);
+    } finally {
+      setPasswordLoading(false);
+    }
+  };
+
   if (authLoading) {
     return (
       <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light">
@@ -159,6 +200,72 @@ function App() {
     );
   }
 
+  if (profileLoading) {
+    return (
+      <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light">
+        <div className="text-center">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Cargando...</span>
+          </div>
+          <p className="mt-3 text-muted">Obteniendo perfil...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (profileError) {
+    return (
+      <div className="min-vh-100 d-flex align-items-center justify-content-center bg-light">
+        <div className="card p-4 shadow-sm" style={{ maxWidth: 420 }}>
+          <h5 className="text-danger">Error al cargar el perfil</h5>
+          <p className="text-muted">{profileError}</p>
+          <button className="btn btn-primary" onClick={() => refetchProfile()}>Reintentar</button>
+        </div>
+      </div>
+    );
+  }
+
+  if (profile?.must_change_password) {
+    return (
+      <div className="min-vh-100 d-flex align-items-center justify-content-center" style={{ backgroundColor: "var(--bg-light)" }}>
+        <div className="card shadow-sm border-0" style={{ maxWidth: 480, width: "100%" }}>
+          <div className="card-body p-4">
+            <h3 className="fw-bold mb-2" style={{ color: "#5FB3A2" }}>Actualiza tu contraseña</h3>
+            <p className="text-muted">Por seguridad debes definir una nueva contraseña antes de continuar.</p>
+            {passwordError && <div className="alert alert-danger">{passwordError}</div>}
+            <form className="d-grid gap-3" onSubmit={handlePasswordChange}>
+              <div>
+                <label className="form-label">Nueva contraseña</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  value={nuevoPassword}
+                  onChange={(e) => setNuevoPassword(e.target.value)}
+                  required
+                  minLength={8}
+                />
+              </div>
+              <div>
+                <label className="form-label">Confirmar contraseña</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  minLength={8}
+                />
+              </div>
+              <button className="btn btn-success" type="submit" disabled={passwordLoading}>
+                {passwordLoading ? "Guardando..." : "Guardar y continuar"}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container-fluid py-4">
       <ToastContainer />
@@ -183,6 +290,13 @@ function App() {
           </button>
         </div>
       </div>
+
+      {profile && (
+        <div className="alert alert-info mt-3" role="status">
+          <i className="bi bi-person-circle me-2"></i>
+          Bienvenido, <strong>{profile.nombre || profile.username}</strong>
+        </div>
+      )}
 
       {/* Pestañas de navegación */}
       <ul className="nav nav-tabs mb-4">
@@ -210,6 +324,16 @@ function App() {
             <i className="bi bi-search"></i> Consultar Entregas
           </button>
         </li>
+        {esAdmin && (
+          <li className="nav-item">
+            <button
+              className={`nav-link ${vistaActiva === "admin" ? "active" : ""}`}
+              onClick={() => setVistaActiva("admin")}
+            >
+              <i className="bi bi-gear"></i> Administración
+            </button>
+          </li>
+        )}
       </ul>
 
       {/* Contenido según pestaña activa */}
@@ -231,8 +355,10 @@ function App() {
             />
           </div>
         </div>
-      ) : (
+      ) : vistaActiva === "consultar" ? (
         <ConsultarEntregas />
+      ) : (
+        <AdminPanel />
       )}
 
       <EditEntregaModal

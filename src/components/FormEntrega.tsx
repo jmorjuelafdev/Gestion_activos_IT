@@ -378,6 +378,73 @@ type FormEntregaProps = {
 
 const EMPRESAS = ["Empresa0", "Empresa1", "Empresa2", "Empresa3", "Otra"];
 
+const TIPOS_EQUIPO = [
+  "Audífonos diadema",
+  "Camara web",
+  "Cámara IP",
+  "Celular",
+  "Combo teclado y mouse",
+  "Escáner",
+  "Fotocopiadora",
+  "Impresora",
+  "Impresora térmica",
+  "Lápiz óptico",
+  "Licencia de software",
+  "Monitor",
+  "Mouse",
+  "Parlantes",
+  "PC Todo en Uno",
+  "PC de escritorio",
+  "Portátil",
+  "Proyector",
+  "Scanner",
+  "Switch de Red",
+  "Tablet",
+  "Tabla digitalizadora",
+  "Teclado",
+  "Teclado numérico",
+  "Video beam",
+];
+
+const MARCAS_EQUIPO = [
+  "Genius",
+  "Clon",
+  "HP",
+  "Acer",
+  "Lenovo",
+  "Asus",
+  "Apple",
+  "Dell",
+  "Logitech",
+  "Corsair",
+  "Razer",
+  "Master",
+  "Samsung",
+  "LG",
+  "AOC",
+  "Microsoft",
+  "MSI",
+  "Epson",
+  "VTA",
+  "Canon",
+  "Xiaomi",
+  "Motorola",
+  "Kalley",
+  "Xtech",
+  "Belkin",
+  "Huawei",
+  "Esenses",
+  "Sony",
+  "Honor",
+  "ZTE",
+  "VIVO",
+  "Oppo",
+  "Challenger",
+  "Panasonic",
+  "Olimpo",
+  "Tapo",
+];
+
 const OFICINAS_POR_EMPRESA: Record<string, string[]> = {
   Empresa0: ["Sede Nacional Zona Franca Bogotá", "Otra"],
 };
@@ -723,6 +790,7 @@ function FormEntrega({ onEntregaRegistrada }: FormEntregaProps) {
   const [empresaCustom, setEmpresaCustom] = useState("");
   const [oficinaNombreCustom, setOficinaNombreCustom] = useState("");
   const [usarNombreOficinaOtra, setUsarNombreOficinaOtra] = useState(false);
+  const [empresaEnvioCustom, setEmpresaEnvioCustom] = useState("");
 
   const [activos, setActivos] = useState<ActivoSimple[]>([]);
   const [activoActual, setActivoActual] = useState<ActivoSimple>({
@@ -995,6 +1063,8 @@ function FormEntrega({ onEntregaRegistrada }: FormEntregaProps) {
       <SeccionEnvio 
         envio={envio} 
         setEnvio={setEnvio}
+        empresaEnvioCustom={empresaEnvioCustom}
+        setEmpresaEnvioCustom={setEmpresaEnvioCustom}
         errores={{
           guia: erroresCampos.envioGuia,
           empresa: erroresCampos.envioEmpresa,
@@ -1744,11 +1814,15 @@ function SeccionUsuario({
 function SeccionEnvio({
   envio,
   setEnvio,
+  empresaEnvioCustom,
+  setEmpresaEnvioCustom,
   errores,
   onClearError,
 }: {
   envio: Partial<EnvioFormData>;
   setEnvio: React.Dispatch<React.SetStateAction<Partial<EnvioFormData>>>;
+  empresaEnvioCustom: string;
+  setEmpresaEnvioCustom: React.Dispatch<React.SetStateAction<string>>;
   errores?: { guia?: string; empresa?: string; fecha?: string };
   onClearError: (field: string) => void;
 }) {
@@ -1770,16 +1844,45 @@ function SeccionEnvio({
       </div>
 
       <div className="mb-2">
-        <input
-          className={`form-control ${errores?.empresa ? 'is-invalid' : ''}`}
-          placeholder="Empresa de envío *"
-          value={envio.empresa_envio || ""}
+        <label className="form-label small text-muted">Empresa de envío *</label>
+        <select
+          className={`form-select ${errores?.empresa ? 'is-invalid' : ''}`}
+          value={["4-72", "Coordinadora", "Deprisa", "Envía", "Inter Rapidísimo", "Servientrega", "TCC"].includes(envio.empresa_envio || "") ? envio.empresa_envio : "Otra"}
           onChange={(e) => {
-            setEnvio({ ...envio, empresa_envio: e.target.value });
+            const value = e.target.value;
+            if (value === "Otra") {
+              setEnvio({ ...envio, empresa_envio: empresaEnvioCustom });
+            } else {
+              setEnvio({ ...envio, empresa_envio: value });
+              setEmpresaEnvioCustom("");
+            }
             if (errores?.empresa) onClearError('envioEmpresa');
           }}
-        />
+        >
+          <option value="">Selecciona una empresa de envío</option>
+          <option value="4-72">4-72</option>
+          <option value="Coordinadora">Coordinadora</option>
+          <option value="Deprisa">Deprisa</option>
+          <option value="Envía">Envía</option>
+          <option value="Inter Rapidísimo">Inter Rapidísimo</option>
+          <option value="Servientrega">Servientrega</option>
+          <option value="TCC">TCC</option>
+          <option value="Otra">Otra</option>
+        </select>
         {errores?.empresa && <div className="invalid-feedback d-block">{errores.empresa}</div>}
+        
+        {(!envio.empresa_envio || !["4-72", "Coordinadora", "Deprisa", "Envía", "Inter Rapidísimo", "Servientrega", "TCC"].includes(envio.empresa_envio)) && (
+          <input
+            className="form-control mt-2"
+            placeholder="Nombre de la empresa de envío"
+            value={empresaEnvioCustom}
+            onChange={(e) => {
+              const value = e.target.value;
+              setEmpresaEnvioCustom(value);
+              setEnvio({ ...envio, empresa_envio: value });
+            }}
+          />
+        )}
       </div>
 
       <div className="mb-2">
@@ -1842,24 +1945,79 @@ function SeccionActivos({
 
       <div className="row g-2">
         <div className="col-md-3">
-          <input
-            className="form-control"
-            placeholder="Tipo"
-            value={activoActual.tipo}
-            onChange={(e) => setActivoActual({ ...activoActual, tipo: e.target.value })}
-          />
+          <label className="form-label small text-muted">Tipo *</label>
+          <select
+            className="form-select"
+            value={TIPOS_EQUIPO.includes(activoActual.tipo)
+              ? activoActual.tipo
+              : activoActual.tipo
+              ? "Otra"
+              : ""}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (value === "Otra") {
+                setActivoActual({ ...activoActual, tipo: "" });
+              } else {
+                setActivoActual({ ...activoActual, tipo: value });
+              }
+            }}
+          >
+            <option value="">Selecciona un tipo</option>
+            {sortStrings(TIPOS_EQUIPO).map((tipo) => (
+              <option key={tipo} value={tipo}>
+                {tipo}
+              </option>
+            ))}
+            <option value="Otra">Otra</option>
+          </select>
+          {!TIPOS_EQUIPO.includes(activoActual.tipo) && (
+            <input
+              className="form-control mt-2"
+              placeholder="Especifica el tipo"
+              value={activoActual.tipo}
+              onChange={(e) => setActivoActual({ ...activoActual, tipo: e.target.value })}
+            />
+          )}
         </div>
 
         <div className="col-md-3">
-          <input
-            className="form-control"
-            placeholder="Marca"
-            value={activoActual.marca}
-            onChange={(e) => setActivoActual({ ...activoActual, marca: e.target.value })}
-          />
+          <label className="form-label small text-muted">Marca *</label>
+          <select
+            className="form-select"
+            value={MARCAS_EQUIPO.includes(activoActual.marca)
+              ? activoActual.marca
+              : activoActual.marca
+              ? "Otra"
+              : ""}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (value === "Otra") {
+                setActivoActual({ ...activoActual, marca: "" });
+              } else {
+                setActivoActual({ ...activoActual, marca: value });
+              }
+            }}
+          >
+            <option value="">Selecciona una marca</option>
+            {sortStrings(MARCAS_EQUIPO).map((marca) => (
+              <option key={marca} value={marca}>
+                {marca}
+              </option>
+            ))}
+            <option value="Otra">Otra</option>
+          </select>
+          {!MARCAS_EQUIPO.includes(activoActual.marca) && (
+            <input
+              className="form-control mt-2"
+              placeholder="Especifica la marca"
+              value={activoActual.marca}
+              onChange={(e) => setActivoActual({ ...activoActual, marca: e.target.value })}
+            />
+          )}
         </div>
 
         <div className="col-md-3">
+          <label className="form-label small text-muted">Modelo *</label>
           <input
             className="form-control"
             placeholder="Modelo"
@@ -1869,6 +2027,7 @@ function SeccionActivos({
         </div>
 
         <div className="col-md-3">
+          <label className="form-label small text-muted">Serial *</label>
           <input
             className="form-control"
             placeholder="Serial"
